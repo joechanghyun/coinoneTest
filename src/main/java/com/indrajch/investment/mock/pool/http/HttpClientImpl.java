@@ -11,6 +11,7 @@ import org.apache.http.ParseException;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.protocol.HttpClientContext;
 import org.apache.http.conn.ConnectTimeoutException;
@@ -59,6 +60,35 @@ public class HttpClientImpl implements HttpClient {
 			e.printStackTrace();
 		} catch (IOException e) {
 			HttpConnectionManager.abort(httpPost);
+			e.printStackTrace();
+		}
+
+		return null;
+	}
+
+	public String doGet(String url) {
+		HttpGet httpGet = null;
+		CloseableHttpClient closeableHttpClient = null;
+		CloseableHttpResponse response = null;
+		try {
+			httpGet = new HttpGet(url);
+			closeableHttpClient = HttpConnectionManager.getHttpClient(this.requestConfig);
+			response = closeableHttpClient.execute(httpGet, HttpClientContext.create());
+			return entityToString(response.getEntity());
+		} catch (ClientProtocolException e) {
+			HttpConnectionManager.abort(httpGet);
+			e.printStackTrace();
+		} catch (ConnectTimeoutException e) {
+			HttpConnectionManager.abort(httpGet);
+			e.printStackTrace();
+		} catch (SocketTimeoutException e) {
+			HttpConnectionManager.abort(httpGet);
+			e.printStackTrace();
+		} catch (InterruptedIOException e) {
+			HttpConnectionManager.abort(httpGet);
+			e.printStackTrace();
+		} catch (IOException e) {
+			HttpConnectionManager.abort(httpGet);
 			e.printStackTrace();
 		}
 

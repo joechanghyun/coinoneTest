@@ -10,6 +10,7 @@ import org.springframework.context.annotation.Configuration;
 
 import com.indrajch.investment.mock.api.API;
 import com.indrajch.investment.mock.api.CoinoneAPI;
+import com.indrajch.investment.mock.api.CoinoneAspect;
 import com.indrajch.investment.mock.encrypt.CoinoneCryptography;
 import com.indrajch.investment.mock.encrypt.Cryptography;
 import com.indrajch.investment.mock.pool.http.HttpClient;
@@ -38,9 +39,13 @@ public class MockInvestmentConfiguration {
 	}
 
 	@Bean(name = "coinoneAPI")
-	public API coinoneAPI(@Value("${coinone.access.token}") String accessToken,
-			@Value("${coinone.secret.key}") String secretKey) {
-		return new CoinoneAPI(accessToken, secretKey);
+	public API coinoneAPI(@Value("${coinone.access.token}") String accessToken) {
+		return new CoinoneAPI(accessToken);
+	}
+
+	@Bean
+	public CoinoneAspect coinoneAspect() {
+		return new CoinoneAspect();
 	}
 
 	@Bean(name = "coinoneCryptography")
